@@ -11,3 +11,9 @@ If time permits, these are possible additions:
 Smoothen curve using B Splines. 
 Implement Concorde TSP solver to make solution more efficient
 Add various half toning styles to customize result
+
+
+Requirements:
+ortools and its dependencies.
+For windows see:
+https://developers.google.com/optimization/install/python/windows
