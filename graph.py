@@ -15,13 +15,16 @@ class Graph:
         Raises:
             TypeError: Raise error if nodes is not a list
             TypeError: Raise error if list contains anything but tuples
+            TypeError: Raise error if coordinates inside list are not int or floats
         """
 
         # Error handling
         if not isinstance(nodes,list):
             raise TypeError("Nodes must be a list")
         if not all([isinstance(i,tuple) and len(i)==2 for i in nodes]):
-            raise TypeError("All node entries must be 2-tuples")
+            raise TypeError("All node entries must be 2-tuples")    
+        if not all([isinstance(i[0],(int,float)) and isinstance(i[1],(int, float)) for i in nodes])
+            raise TypeError("All coordinates must be int / floats")
         # FIXME: Add error handling, all coordinates must be int / floats
         
         self.distM = self.createDistMatrix(nodes)
