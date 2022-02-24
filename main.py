@@ -15,12 +15,9 @@ nodes = list(zip(X,Y))
 
 # Create graph object solve TSP
 G = Graph(nodes)
-tspsol = G.TSP(timelimit=20)
+G.createDistMatrix()
+G.TSP(timelimit=10)
+tspsol = G.nodes
 
 # Plot points and approximate optimal path
-fig, ax = plt.subplots(1,1)
-ax.plot(X,Y,"b,")
-ax.plot(tspsol[:,0],tspsol[:,1])
-plt.show()
-
-print()
+G.plot()
