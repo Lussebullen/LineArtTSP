@@ -3,6 +3,7 @@
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 import numpy as np
+from tqdm import tqdm
 
 class Graph:
     def __init__(self, nodes) -> None:
@@ -43,15 +44,16 @@ class Graph:
         """
         n = len(nodes)
         dist = np.zeros((n,n))
-        for i in range(n):
+        for i in tqdm(range(n)):  #Progress bar for the outer loop
             for j in range(i+1):
                 P1, P2 = nodes[i], nodes[j]
                 d = np.sqrt((P1[0]-P2[0])**2+(P1[1]-P2[1])**2)
                 dist[i][j], dist[j][i] = d, d
+        print("Distance Matrix Completed")
         return dist
 
 
-    def TSP(self, scalingfactor = 100):
+    def TSP(self, scalingfactor = 100, timelimit=30):
         #Solve TSP here and return graph object with adjacencylist containing the edges
         #approximated Hamiltonian cycle.
         #From OR tools documentation:
@@ -75,20 +77,29 @@ class Graph:
             # Convert from routing variable Index to distance matrix NodeIndex.
             from_node = manager.IndexToNode(from_index)
             to_node = manager.IndexToNode(to_index)
-            return data['distance_matrix'][from_node][to_node]*scalingfactor
+            return int(data['distance_matrix'][from_node][to_node]*scalingfactor)
 
         transit_callback_index = routing.RegisterTransitCallback(distance_callback)
         #Set cost function
         routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
 
+        print("TSP solver framework constructed. Setting solver parameters")
+
         # Set search parameters and heuristic
         search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-        search_parameters.first_solution_strategy = (
-            routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
-        
+        # Heuristic 1
+        #search_parameters.first_solution_strategy = (routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
+
+        # Heuristic 2
+        search_parameters.local_search_metaheuristic = (routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH)
+        search_parameters.time_limit.seconds = timelimit  # Sets alotted time limit
+        search_parameters.log_search = True # Prints log information during solving.
+
+        print("Solving...")
         # Solve
         solution = routing.SolveWithParameters(search_parameters)
 
+        print("Solver finished")
         # Get the approximated optimal order of nodes for the shortest path as a list of indexes
         index = routing.Start(0)
         route = [manager.IndexToNode(index)]
