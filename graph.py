@@ -8,36 +8,39 @@ from matplotlib import pyplot as plt
 from scipy import interpolate
 
 class Graph:
-    def __init__(self, nodes) -> None:
-        """Initializes Graph object with its nodes converted
-        to a distance matrix.
+    def __init__(self) -> None:
+        """Initlializes Graph object.
+        All attributes initially None.
+
+        self.nodes shall contain array of nodes in graph
+        self.distM will be a matrix containing all mutual distances of nodes.
+        """
+        self.nodes = None
+        self.distM = None
+
+    def setNodes(self, nodes):
+        """Sets self.nodes to given nodes after removing duplicates
 
         Args:
-            nodes (list of 2-tuples of integers or floats): List of coordinates
+            nodes (numpy ndarray): Array of nodes
 
         Raises:
-            TypeError: Raise error if nodes is not a numpy array
-            TypeError: Raise error if array does not have 2 columns
+            TypeError: If nodes not a numpy array
+            ValueError: If array has wrong shape
         """
-
         # Error handling
         if not isinstance(nodes,np.ndarray):
             raise TypeError("Nodes must be a numpy array")
         if nodes.shape[1] != 2:
-            raise TypeError("Array must have 2 columns")
-        
-        self.nodes = nodes
-        self.distM = None
+            raise ValueError("Array must have 2 columns")
 
-    def createDistMatrix(self):
+        # Remove duplicates
+        tuplelist = [tuple(row) for row in nodes]
+        self.nodes = np.unique(tuplelist, axis=0)
+
+    def setDistMatrix(self):
         """
-        Creates a distance matrix from the nodes in a graph.
-
-        Args:
-            nodes (list of 2-tuples of integers or floats): List of coordinates.
-
-        Returns:
-            array of floats: n x n array of mutual distances between coordinates.
+        Creates and sets self.distM to the distance matrix.
         """
         n = len(self.nodes)
         dist = np.zeros((n,n))
@@ -46,7 +49,6 @@ class Graph:
                 P1, P2 = self.nodes[i], self.nodes[j]
                 d = np.sqrt((P1[0]-P2[0])**2+(P1[1]-P2[1])**2)
                 dist[i][j], dist[j][i] = d, d
-        print("Distance Matrix Completed")
         self.distM = dist
 
 
