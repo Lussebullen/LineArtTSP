@@ -7,7 +7,7 @@ import numpy as np
 ########################################################################################################################
 # Used this source for Stippling: https://www.cs.ubc.ca/labs/imager/tr/2002/secord2002b/secord.2002b.pdf
 
-def rejectionSampling(n, M):
+def rejectionSampling(n, M, imagestyle="treatimage"):
     """
     :param n:   Desired amount of samples
     :param M:   Matrix containing grayscale values of pixels in image, rejection function
