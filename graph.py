@@ -128,5 +128,5 @@ class Graph:
             xint, yint = interpolate.splev(np.linspace(0, 1, len(self.nodes)*20), f)
             ax.plot(xint, yint)
         else:
-            ax.plot(self.nodes[:,0], self.nodes[:,1],"b.")
+            ax.plot(self.nodes[:,0], self.nodes[:,1],"b.",markersize=1)
         plt.show()

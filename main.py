@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 
 # Generate test data points
-n=3000
+n=1000
 size = 1000
 
 # Load Image, resize and convert to grayscale matrix with elements in [0,1], 0=black, 1=white.
@@ -25,8 +25,7 @@ nodes = rejectionSampling(n,M_pixels)
 G = Graph()
 G.setNodes(nodes)
 G.setDistMatrix()
-G.TSP(timelimit=1200)
-
+G.TSP(timelimit=20)
 
 # Plot points and approximate optimal path
-G.plot(style="spline")
+G.plot(style="line")
