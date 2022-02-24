@@ -13,8 +13,11 @@ def rejectionSampling(n, M, imagestyle="treatimage"):
     :param M:   Matrix containing grayscale values of pixels in image, rejection function
     :return:    Set of crude initial stippling points
     """
-    r = len(M)      # Rows
-    c = len(M[0])   # Columns
+    
+    M_gray = M.convert('L')
+    M_pixels = np.array(list(M_gray.getdata())).reshape((M_gray.size[1], M_gray.size[0]))/255
+    r = len(M_gray)      # Rows
+    c = len(M_gray[0])   # Columns
     a = 0           # Accepted samples
     X = [0] * n
     Y = [0] * n
@@ -22,7 +25,7 @@ def rejectionSampling(n, M, imagestyle="treatimage"):
         x = int(rd.uniform(0, c))
         y = int(rd.uniform(0, r))
         u = rd.uniform(0, 1)
-        if u > M[y][x]:
+        if u > M_gray[y][x]:
             X[a] = x
             Y[a] = y
             a += 1
