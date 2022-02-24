@@ -4,6 +4,7 @@ from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 import numpy as np
 from tqdm import tqdm
+from matplotlib import pyplot as plt
 
 class Graph:
     def __init__(self, nodes) -> None:
@@ -30,9 +31,9 @@ class Graph:
         # FIXME: Add error handling, all coordinates must be int / floats
         
         self.nodes = nodes
-        self.distM = self.createDistMatrix(nodes)
+        self.distM = None
 
-    def createDistMatrix(self, nodes):
+    def createDistMatrix(self):
         """
         Creates a distance matrix from the nodes in a graph.
 
@@ -42,15 +43,15 @@ class Graph:
         Returns:
             array of floats: n x n array of mutual distances between coordinates.
         """
-        n = len(nodes)
+        n = len(self.nodes)
         dist = np.zeros((n,n))
         for i in tqdm(range(n)):  #Progress bar for the outer loop
             for j in range(i+1):
-                P1, P2 = nodes[i], nodes[j]
+                P1, P2 = self.nodes[i], self.nodes[j]
                 d = np.sqrt((P1[0]-P2[0])**2+(P1[1]-P2[1])**2)
                 dist[i][j], dist[j][i] = d, d
         print("Distance Matrix Completed")
-        return dist
+        self.distM = dist
 
 
     def TSP(self, scalingfactor = 100, timelimit=30):
@@ -108,6 +109,14 @@ class Graph:
             route.append(manager.IndexToNode(index))
 
         # Return reordered array of nodes.
-        nodarray = np.array(self.nodes)
-        return nodarray[route]
-    
+        nodearray = np.array(self.nodes)
+        self.nodes = nodearray[route]
+        self.distM = None   # Distance matrix no longer valid
+
+    def plot(self, style="line"):
+        fig, ax = plt.subplots(1,1)
+        if style=="line":
+            ax.plot(self.nodes[:,0], self.nodes[:,1])
+        else:
+            ax.plot(self.nodes[:,0], self.nodes[:,1],"b.")
+        plt.show()
