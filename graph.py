@@ -5,6 +5,7 @@ from ortools.constraint_solver import pywrapcp
 import numpy as np
 from tqdm import tqdm
 from matplotlib import pyplot as plt
+from scipy import interpolate
 
 class Graph:
     def __init__(self, nodes) -> None:
@@ -15,20 +16,15 @@ class Graph:
             nodes (list of 2-tuples of integers or floats): List of coordinates
 
         Raises:
-            TypeError: Raise error if nodes is not a list
-            TypeError: Raise error if list contains anything but tuples
-            TypeError: Raise error if coordinates inside list are not int or floats
+            TypeError: Raise error if nodes is not a numpy array
+            TypeError: Raise error if array does not have 2 columns
         """
 
         # Error handling
-        if not isinstance(nodes,list):
-            raise TypeError("Nodes must be a list")
-        if not all([isinstance(i,tuple) and len(i)==2 for i in nodes]):
-            raise TypeError("All node entries must be 2-tuples")
-        typewhitelist = (int, float,np.int32,np.float64)
-        if not all([isinstance(i[0],typewhitelist) and isinstance(i[1],typewhitelist) for i in nodes]):
-            raise TypeError("All coordinates must be int / floats")
-        # FIXME: Add error handling, all coordinates must be int / floats
+        if not isinstance(nodes,np.ndarray):
+            raise TypeError("Nodes must be a numpy array")
+        if nodes.shape[1] != 2:
+            raise TypeError("Array must have 2 columns")
         
         self.nodes = nodes
         self.distM = None
@@ -108,15 +104,27 @@ class Graph:
             index = solution.Value(routing.NextVar(index))
             route.append(manager.IndexToNode(index))
 
-        # Return reordered array of nodes.
-        nodearray = np.array(self.nodes)
-        self.nodes = nodearray[route]
+        # re-order self.nodes to be order of (approximately) optimal path
+        self.nodes = self.nodes[route]
         self.distM = None   # Distance matrix no longer valid
 
     def plot(self, style="line"):
+        """Plots the nodes of the graph in the given style.
+
+        Args:
+            style (str, optional): Plots line graph, spline graph or point graph. Defaults to "line".
+        """
         fig, ax = plt.subplots(1,1)
         if style=="line":
             ax.plot(self.nodes[:,0], self.nodes[:,1])
+        elif style=="spline":
+            X = self.nodes[:,0]
+            Y = self.nodes[:,1]
+            #create spline function
+            f, _ = interpolate.splprep([X, Y], s=0, per=True)
+            #Create interpolated list of points and plot
+            xint, yint = interpolate.splev(np.linspace(0, 1, len(self.nodes)*20), f)
+            ax.plot(xint, yint)
         else:
             ax.plot(self.nodes[:,0], self.nodes[:,1],"b.")
         plt.show()
