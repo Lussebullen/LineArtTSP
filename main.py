@@ -9,7 +9,6 @@ from PIL import Image
 # Generate test data points
 n=1000
 size = 1000
-#ASdFgfdsggfgdf
 # Load Image, resize and convert to grayscale matrix with elements in [0,1], 0=black, 1=white.
 img = Image.open('recurrentTheme.jpg').convert('L')   # FIXME: remove later, load image in main.
 img = img.rotate(180)
