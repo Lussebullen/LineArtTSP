@@ -1,5 +1,6 @@
 import random as rd
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 ########################################################################################################################
@@ -15,6 +16,7 @@ def rejectionSampling(n, M, imagestyle="brightness"):
     """
     #CONTRAST METHOD 
     if imagestyle == "contrast":
+        M.show()
         img_pixels = np.array(list(M.getdata())).reshape((M.size[1], M.size[0], 3))/255
         contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-2, j, :])/np.sqrt(3) for j in range(M.size[0])] for i in range(2, M.size[1])])
         r = len(contrast_array)      # Rows
@@ -30,6 +32,7 @@ def rejectionSampling(n, M, imagestyle="brightness"):
                 X[a] = x
                 Y[a] = y
                 a += 1
+        plt.scatter(X,Y, s=5)
         return np.array([[X[i], Y[i]] for i in range(len(X))])
     if imagestyle == "contrast":
         M_gray = M.convert('L')
