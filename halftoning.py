@@ -31,7 +31,6 @@ def rejectionSampling(n, M, imagestyle="brightness"):
                 X[a] = x
                 Y[a] = y
                 a += 1
-        plt.scatter(X,Y, s=5)
         return np.array([[X[i], Y[i]] for i in range(len(X))])
     if imagestyle == "brightness":
         M_gray = M.convert('L')
@@ -49,5 +48,4 @@ def rejectionSampling(n, M, imagestyle="brightness"):
                 X[a] = x
                 Y[a] = y
                 a += 1
-        plt.scatter(X,Y, s=5)
         return np.array([[X[i], Y[i]] for i in range(len(X))])
