@@ -16,7 +16,7 @@ def rejectionSampling(n, M, imagestyle="brightness"):
     #CONTRAST METHOD 
     if imagestyle == "contrast":
         img_pixels = np.array(list(M.getdata())).reshape((M.size[1], M.size[0], 3))/255
-        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-2, j, :])/np.sqrt(3) for j in range(img.size[0])] for i in range(2, img.size[1])])
+        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-2, j, :])/np.sqrt(3) for j in range(M.size[0])] for i in range(2, M.size[1])])
         r = len(contrast_array)      # Rows
         c = len(contrast_array[0]) 
         a = 0           # Accepted samples
