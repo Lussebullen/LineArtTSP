@@ -14,7 +14,7 @@ img = Image.open('recurrentTheme.jpg')   # FIXME: remove later, load image in ma
 ###I(Toine) moved conversion to grayscale, array creation into halftoning in order to allow me to add contrast method 
 img = img.rotate(180)
 
-nodes = rejectionSampling(n, img)
+nodes = rejectionSampling(n, img, "contrast")
 
 #X = np.random.randint(0,size,n)
 #Y = np.random.randint(0,size,n)
