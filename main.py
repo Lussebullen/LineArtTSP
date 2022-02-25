@@ -7,10 +7,11 @@ import numpy as np
 from PIL import Image
 
 # Generate test data points
-n=1000
+n=3000
 size = 1000
 # Load Image, resize and convert to grayscale matrix with elements in [0,1], 0=black, 1=white.
-img = Image.open('C:\\Users\\Antoine Neveu\\Desktop\\TSPProject\\LineArtTSP\\Viktor_Arcane_2_Render.png')   # FIXME: remove later, load image in main.
+img = Image.open('recurrentTheme.jpg')   # FIXME: remove later, load image in main.
+img = img.rotate(180)
 ###I(Toine) moved conversion to grayscale, array creation into halftoning in order to allow me to add contrast method 
 nodes = rejectionSampling(n, img, "contrast")
 
@@ -22,7 +23,7 @@ nodes = rejectionSampling(n, img, "contrast")
 G = Graph()
 G.setNodes(nodes)
 G.setDistMatrix()
-G.TSP(timelimit=20)
+G.TSP(timelimit=40)
 
 # Plot points and approximate optimal path
 G.plot(style="line")

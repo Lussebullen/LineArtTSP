@@ -18,7 +18,7 @@ def rejectionSampling(n, M, imagestyle="brightness"):
     if imagestyle == "contrast":
         M.show()
         img_pixels = np.array(list(M.getdata())).reshape((M.size[1], M.size[0], 3))/255
-        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-2, j, :])/np.sqrt(3) for j in range(M.size[0])] for i in range(2, M.size[1])])
+        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-5, j, :])/np.sqrt(3) for j in range(M.size[0])] for i in range(5, M.size[1])])
         r = len(contrast_array)      # Rows
         c = len(contrast_array[0]) 
         a = 0           # Accepted samples
@@ -27,14 +27,14 @@ def rejectionSampling(n, M, imagestyle="brightness"):
         while a < n:
             x = int(rd.uniform(0, c))
             y = int(rd.uniform(0, r))
-            u = 0.2
+            u = 0.15
             if contrast_array[y][x] > u:
                 X[a] = x
                 Y[a] = y
                 a += 1
         plt.scatter(X,Y, s=5)
         return np.array([[X[i], Y[i]] for i in range(len(X))])
-    if imagestyle == "contrast":
+    if imagestyle == "brightness":
         M_gray = M.convert('L')
         M_pixels = np.array(list(M_gray.getdata())).reshape((M_gray.size[1], M_gray.size[0]))/255
         r = len(M_pixels)      # Rows
@@ -50,4 +50,5 @@ def rejectionSampling(n, M, imagestyle="brightness"):
                 X[a] = x
                 Y[a] = y
                 a += 1
+        plt.scatter(X,Y, s=5)
         return np.array([[X[i], Y[i]] for i in range(len(X))])
