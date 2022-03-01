@@ -8,6 +8,7 @@ from PIL import Image
 
 # Generate test data points
 n=1000
+
 size = 1000
 
 # Load Image, resize and convert to grayscale matrix with elements in [0,1], 0=black, 1=white.
@@ -28,4 +29,6 @@ G.setDistMatrix()
 G.TSP(timelimit=20)
 
 # Plot points and approximate optimal path
+G.plot(style="point")
 G.plot(style="line")
+G.plot(style="spline")
