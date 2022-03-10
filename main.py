@@ -7,8 +7,7 @@ import numpy as np
 from PIL import Image
 
 # Generate test data points
-n=100
-size = 1000
+n=1000
 # Load Image, resize and convert to grayscale matrix with elements in [0,1], 0=black, 1=white.
 img = Image.open('C:\\Users\\Antoine Neveu\\Desktop\\TSPProject\\LineArtTSP\\SFJxCXKMZihnZsVnn3LoEk-1200-80.jpg')   # FIXME: remove later, load image in main.
 img = img.rotate(180)
