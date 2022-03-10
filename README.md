@@ -25,6 +25,7 @@ Add various half toning styles to customize result
 
 Requirements:
 ortools and its dependencies.
+
 For windows see:
 https://developers.google.com/optimization/install/python/windows
 
