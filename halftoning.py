@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 ########################################################################################################################
 # Used this source for Stippling: https://www.cs.ubc.ca/labs/imager/tr/2002/secord2002b/secord.2002b.pdf
 
-def rejectionSampling(n, M, imagestyle="brightness"):
+def rejectionSampling(n, M, imagestyle="brightness", pixel_distance = 5, contrast_threshold = 0.15):
     """
     :param n:   Desired amount of samples
     :param M:   Matrix containing grayscale values of pixels in image, rejection function
@@ -16,8 +16,6 @@ def rejectionSampling(n, M, imagestyle="brightness"):
     """
     #CONTRAST METHOD 
     if imagestyle == "contrast":
-        pixel_distance = 5
-        contrast_threshold = 0.15
         img_pixels = np.array(list(M.getdata())).reshape((M.size[1], M.size[0], 3))/255
         #play around with the i-5 and range(5, ..); change 5 to various values
         contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-pixel_distance, j, :])/np.sqrt(3) for j in range(M.size[0])] for i in range(pixel_distance, M.size[1])])
