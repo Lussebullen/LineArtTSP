@@ -27,7 +27,9 @@ Requirements:
 ortools and its dependencies.
 For windows see:
 https://developers.google.com/optimization/install/python/windows
-For Mac see: https://developers.google.com/optimization/install
+
+For Mac see:
+https://developers.google.com/optimization/install
 
 For progress bar in distance matrix tqdm
 $ pip install -U tqdm
