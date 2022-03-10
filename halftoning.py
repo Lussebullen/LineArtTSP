@@ -17,9 +17,10 @@ def rejectionSampling(n, M, imagestyle="brightness"):
     #CONTRAST METHOD 
     if imagestyle == "contrast":
         pixel_distance = 5
+        contrast_threshold = 0.15
         img_pixels = np.array(list(M.getdata())).reshape((M.size[1], M.size[0], 3))/255
         #play around with the i-5 and range(5, ..); change 5 to various values
-        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-pixel_distance, j, :])/np.sqrt(3) for j in range(M.size[0])] for i in range(5, M.size[1])])
+        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-pixel_distance, j, :])/np.sqrt(3) for j in range(M.size[0])] for i in range(pixel_distance, M.size[1])])
         #I set up the following code identically
         r = len(contrast_array)
         c = len(contrast_array[0]) 
@@ -29,10 +30,8 @@ def rejectionSampling(n, M, imagestyle="brightness"):
         while a < n:
             x = int(rd.uniform(0, c))
             y = int(rd.uniform(0, r))
-            #play around with this u constant; it determines what level of contrast is considered.
-            contrast_threshold = 0.15
             if contrast_array[y][x] > contrast_threshold:
-                X[a] = x
+                X[a] = X
                 Y[a] = y
                 a += 1
         return np.array([[X[i], Y[i]] for i in range(len(X))])
