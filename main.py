@@ -12,7 +12,7 @@ n=1000
 img = Image.open('C:\\Users\\Antoine Neveu\\Desktop\\TSPProject\\LineArtTSP\\SFJxCXKMZihnZsVnn3LoEk-1200-80.jpg')   # FIXME: remove later, load image in main.
 img = img.rotate(180)
 ###I(Toine) moved conversion to grayscale, array creation into halftoning in order to allow me to add contrast method 
-nodes = rejectionSampling(n, img, "contrast")
+nodes = rejectionSampling(n, img, imagestyle = "contrast")
 
 #X = np.random.randint(0,size,n)
 #Y = np.random.randint(0,size,n)
@@ -26,3 +26,4 @@ G.TSP(timelimit=40)
 
 # Plot points and approximate optimal path
 G.plot(style="line")
+G.plot(style="spline")
