@@ -24,6 +24,13 @@ def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_
 
     #CONTRAST METHOD 
     if imagestyle == "contrast":
+        #checking some input values are legitimate
+        if contrast_threshold < 0 or contrast_threshold > 1:
+            raise ValueError("Contrast threshold must be a number between 0 and 1, inclusive.")
+        if abs(x_pixel_distance) > M.size[0]:
+            raise ValueError("x pixel shift exceeds number of x pixels")
+        if abs(y_pixel_distance) > M.size[1]:
+            raise ValueError("y pixel shift exceeds number of y pixels")
         #creating NP array based on image
         M_array = np.array(list(M.getdata()))
         #Checking if image has RGB pixels - if not, 'broadcasts' to RGB
@@ -32,11 +39,7 @@ def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_
         #reshaping array into image dimensions
         img_pixels = M_array.reshape((M.size[1], M.size[0], 3))/255
         #creating shifted contrast array 
-        if abs(x_pixel_distance) > M.size[0]:
-            raise ValueError("x pixel shift exceeds number of x pixels")
-        if abs(y_pixel_distance) > M.size[1]:
-            raise ValueError("y pixel shift exceeds number of y pixels")
-        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-x_pixel_distance, j-y_pixel_distance, :])/np.sqrt(3) for j in range(max(200,y_pixel_distance), min(M.size[0], M.size[0]+y_pixel_distance))] for i in range(max(0,x_pixel_distance), min(M.size[1], M.size[1]+x_pixel_distance))])
+        contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-x_pixel_distance, j-y_pixel_distance, :])/np.sqrt(3) for j in range(max(0,x_pixel_distance), min(M.size[0], M.size[0]+x_pixel_distance))] for i in range(max(0,y_pixel_distance), min(M.size[1], M.size[1]+y_pixel_distance))])
         #I set up the following code identically
         r = len(contrast_array)
         c = len(contrast_array[0]) 
