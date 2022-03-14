@@ -7,7 +7,7 @@ from PIL import Image, ImageOps
 ########################################################################################################################
 # Used this source for Stippling: https://www.cs.ubc.ca/labs/imager/tr/2002/secord2002b/secord.2002b.pdf
 
-def rejectionSampling(n, path, imagestyle="brightness", pixel_distance = 5, contrast_threshold = 0.15):
+def rejectionSampling(n, path, imagestyle="brightness", pixel_distance = 5, contrast_threshold = 0.15, smoothing_constant = 0):
     """
     :param n:   Desired amount of samples
     :param path:   path to image file for halftoning
@@ -19,7 +19,10 @@ def rejectionSampling(n, path, imagestyle="brightness", pixel_distance = 5, cont
 
     #CONTRAST METHOD 
     if imagestyle == "contrast":
-        img_pixels = np.array(list(M.getdata())).reshape((M.size[1], M.size[0], 3))/255
+        M_array = np.array(list(M.getdata()))
+        if M_array.size != M.size[1]*M.size[0]*3:
+            M_array = np.stack((M_array,)*3, axis = 1)
+        img_pixels = M_array.reshape((M.size[1], M.size[0], 3))/255
         #play around with the i-5 and range(5, ..); change 5 to various values
         contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-pixel_distance, j-pixel_distance, :])/np.sqrt(3) for j in range(pixel_distance, M.size[0])] for i in range(pixel_distance, M.size[1])])
         #I set up the following code identically
@@ -28,12 +31,23 @@ def rejectionSampling(n, path, imagestyle="brightness", pixel_distance = 5, cont
         a = 0 
         X = [0] * n
         Y = [0] * n
+        if smoothing_constant > 0 and smoothing_constant <= 1:
+            smoothing_slope = 1/(2*contrast_threshold*smoothing_constant)
+        elif smoothing_constant < 0 or smoothing_constant > 1:
+            raise ValueError("Smoothing constant must be a value between 0 and 1, inclusive.")
+        
         while a < n:
             x = int(rd.uniform(0, c))
             y = int(rd.uniform(0, r))
             #play around with this u constant; it determines what level of contrast is considered.
-
-            if contrast_array[y][x] > contrast_threshold:
+            if smoothing_constant == 0:
+                if contrast_array[y][x] > contrast_threshold:
+                    acceptance_probability = 1
+                else:
+                    acceptance_probability = 0
+            else:
+                acceptance_probability = max(min(1, smoothing_slope*(contrast_array[y][x]-contrast_threshold)+0.5), 0)
+            if rd.random() < acceptance_probability:
                 X[a] = x
                 Y[a] = y
                 a += 1
