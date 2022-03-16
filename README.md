@@ -33,6 +33,9 @@ https://developers.google.com/optimization/install/python/windows
 For Mac see:
 https://developers.google.com/optimization/install/python/mac
 
+## Scope and Limitations:
+(Will be added momentarily)
+
 ## License:
 This project is licensed under the terms of the MIT license.
 
