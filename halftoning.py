@@ -8,7 +8,7 @@ import math
 ########################################################################################################################
 # Used this source for Stippling: https://www.cs.ubc.ca/labs/imager/tr/2002/secord2002b/secord.2002b.pdf
 
-def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_pixel_distance = 5, contrast_threshold = 0.15, smoothing_constant = 0, invert = True):
+def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_pixel_distance = 5, contrast_threshold = 0.15, smoothing_constant = 0, invert = False):
     """
     :param n:   Desired amount of samples
     :param path:   path to image file for halftoning
@@ -55,34 +55,43 @@ def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_
             raise ValueError("Smoothing constant must be a value between 0 and 1, inclusive.")
         #checking if inversion is on, reflecting acceptance probabilities about 0.5 if so
         if invert == False:
-            while a < n:
-                #choosing random x and y points
+            if smoothing_constant == 0:
+                while a < n:
+                    #choosing random x and y points
+                    x = int(rd.uniform(0, c))
+                    y = int(rd.uniform(0, r))
+                    #accepting all points with sufficient contrast, incrementing point accepted counter
+                    if contrast_array[y][x] > contrast_threshold:
+                        X[a] = x
+                        Y[a] = y
+                        a += 1
+            else:
+                #mostly identical code
                 x = int(rd.uniform(0, c))
                 y = int(rd.uniform(0, r))
-                #checking if we have smoothing or not - creating acceptance probability for point based on appropriate smoothing function if so
-                if smoothing_constant == 0:
-                    if contrast_array[y][x] > contrast_threshold:
-                        acceptance_probability = 1
-                    else:
-                        acceptance_probability = 0
-                else:
-                    acceptance_probability = max(min(1, smoothing_slope*(contrast_array[y][x]-contrast_threshold)+0.5), 0)
-                #randomly accepting point, otherwise it returns to the pool of possible points to be selected
+                #creating acceptance probability for point based on appropriate smoothing function if so
+                acceptance_probability = max(min(1, smoothing_slope*(contrast_array[y][x]-contrast_threshold)+0.5), 0)
+                #randomly accepting point and incrementing points accepted, otherwise it returns to the pool of possible points to be selected
                 if rd.random() < acceptance_probability:
                     X[a] = x
                     Y[a] = y
                     a += 1
         else:
-            while a < n:
+            #mostly identical code
+            if smoothing_constant == 0:
+                while a < n:
+                    x = int(rd.uniform(0, c))
+                    y = int(rd.uniform(0, r))
+                    #switching inequality sign
+                    if contrast_array[y][x] < contrast_threshold:
+                        X[a] = x
+                        Y[a] = y
+                        a += 1
+            else:
                 x = int(rd.uniform(0, c))
                 y = int(rd.uniform(0, r))
-                if smoothing_constant == 0:
-                    if contrast_array[y][x] > 1-contrast_threshold:
-                        acceptance_probability = 0
-                    else:
-                        acceptance_probability = 1
-                else:
-                    acceptance_probability = max(min(1, 1-smoothing_slope*(contrast_array[y][x]-(1-contrast_threshold))+0.5), 0)
+                #1-acceptance probability, in order to reflect values between 0 and 1 about 0.5
+                acceptance_probability = max(min(1, 1-smoothing_slope*(contrast_array[y][x]-contrast_threshold)+0.5), 0)
                 if rd.random() < acceptance_probability:
                     X[a] = x
                     Y[a] = y
