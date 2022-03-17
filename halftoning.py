@@ -8,7 +8,7 @@ import math
 ########################################################################################################################
 # Used this source for Stippling: https://www.cs.ubc.ca/labs/imager/tr/2002/secord2002b/secord.2002b.pdf
 
-def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_pixel_distance = 5, contrast_threshold = 0.15, smoothing_constant = 0, invert = True):
+def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_pixel_distance = 5, contrast_threshold = 0.15, smoothing_constant = 0, invert = False):
     """
     :param n:   Desired amount of samples
     :param path:   path to image file for halftoning
