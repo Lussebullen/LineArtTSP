@@ -51,8 +51,24 @@ Our project, in our view, did not introduce any apparent ethical considerations.
 This project is licensed under the terms of the MIT license.
 
 ## Demo file description:
+Open demo_file.ipynb, description is provided inside the notebook. Simply run cell by cell, change parameters if you wish.
+When running the file you should see the code in action converting an image like this cat:
+![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/recurrentTheme.jpg?raw=true)
 
+To points using halftoning:
 
+![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/points.png?raw=true)
+
+Then to a line drawing by solving TSP:
+
+![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/line.png?raw=true)
+
+Or a smoothened variant using the spline style:
+
+![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/spline.png?raw=true)
+
+To use your own image, simply change the path variable as described in the notebook.
+The quality of the output can be improved by increasing n and/or the timelimit.
 
 ## References
 We would like to thank the Google Developers team for their detailed description of
