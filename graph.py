@@ -53,6 +53,12 @@ class Graph:
 
 
     def TSP(self, scalingfactor = 100, timelimit=30):
+        """Approximately solves TSP on nodes in self using a heuristic.
+
+        Args:
+            scalingfactor (int, optional): Factor to reduce rounding error, must be higher if points are close.
+            timelimit (int, optional): The time limit for the TSP solver, it will not run longer than that.
+        """
         #Solve TSP here and return graph object with adjacencylist containing the edges
         #approximated Hamiltonian cycle.
         #From OR tools documentation:
