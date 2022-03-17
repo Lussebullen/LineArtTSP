@@ -51,7 +51,7 @@ Our project, in our view, did not introduce any apparent ethical considerations.
 This project is licensed under the terms of the MIT license.
 
 ## Demo file description:
-
+![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/recurrentTheme.jpg?raw=true)
 
 
 ## References
