@@ -17,11 +17,12 @@ def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_
     :x_pixel_distance: and :y_pixel_distance: the pixel shifts used to determine contrast between pixels
     :contrast_threshold: the value about which a threshold for point selection is formed - 100% acceptance if smoothing_constant = 0 and contrast exceeds threshold
     :smoothing_constant: Linear smoothening of probability of a point being selected about the contrast threshold - allows for lower contrast to be accepted, and higher contrast to be accepted less frequently
+    :invert: If on, takes points only similar to local pixels for contrast method, or points closer to white for brightness method. If off, takes points only different from local pixels for contrast
+    method, or points closer to black for brightness method.
     """
     # Rotate and flip image
     M = Image.open(path).rotate(180)
     M = ImageOps.mirror(M)
-
     #CONTRAST METHOD 
     if imagestyle == "contrast":
         #checking some input values are legitimate
@@ -38,37 +39,59 @@ def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_
             M_array = np.stack((M_array,)*3, axis = 1)
         #reshaping array into image dimensions
         img_pixels = M_array.reshape((M.size[1], M.size[0], 3))/255
-        #creating shifted contrast array 
+        #creating shifted contrast array based on x,y pixel distance constants
         contrast_array = np.array([[np.linalg.norm(img_pixels[i, j, :] - img_pixels[i-x_pixel_distance, j-y_pixel_distance, :])/np.sqrt(3) for j in range(max(0,x_pixel_distance), min(M.size[0], M.size[0]+x_pixel_distance))] for i in range(max(0,y_pixel_distance), min(M.size[1], M.size[1]+y_pixel_distance))])
-        #I set up the following code identically
         r = len(contrast_array)
         c = len(contrast_array[0]) 
         a = 0 
+        #preemptively creating blank point 
         X = [0] * n
         Y = [0] * n
+        #creating appropriate smoothing function, if smoothing is enabled
         if smoothing_constant > 0 and smoothing_constant <= 1:
             smoothing_slope = 1/(2*contrast_threshold*smoothing_constant)
+        #raising value error if smoothing error is impossible value
         elif smoothing_constant < 0 or smoothing_constant > 1:
             raise ValueError("Smoothing constant must be a value between 0 and 1, inclusive.")
-        
-        while a < n:
-            x = int(rd.uniform(0, c))
-            y = int(rd.uniform(0, r))
-            #play around with this u constant; it determines what level of contrast is considered.
-            if smoothing_constant == 0:
-                if contrast_array[y][x] > contrast_threshold:
-                    acceptance_probability = 1
+        #checking if inversion is on, reflecting acceptance probabilities about 0.5 if so
+        if invert == False:
+            while a < n:
+                #choosing random x and y points
+                x = int(rd.uniform(0, c))
+                y = int(rd.uniform(0, r))
+                #checking if we have smoothing or not - creating acceptance probability for point based on appropriate smoothing function if so
+                if smoothing_constant == 0:
+                    if contrast_array[y][x] > contrast_threshold:
+                        acceptance_probability = 1
+                    else:
+                        acceptance_probability = 0
                 else:
-                    acceptance_probability = 0
-            else:
-                acceptance_probability = max(min(1, smoothing_slope*(contrast_array[y][x]-contrast_threshold)+0.5), 0)
-            if rd.random() < acceptance_probability:
-                X[a] = x
-                Y[a] = y
-                a += 1
+                    acceptance_probability = max(min(1, smoothing_slope*(contrast_array[y][x]-contrast_threshold)+0.5), 0)
+                #randomly accepting point, otherwise it returns to the pool of possible points to be selected
+                if rd.random() < acceptance_probability:
+                    X[a] = x
+                    Y[a] = y
+                    a += 1
+        else:
+            while a < n:
+                x = int(rd.uniform(0, c))
+                y = int(rd.uniform(0, r))
+                if smoothing_constant == 0:
+                    if contrast_array[y][x] > 1-contrast_threshold:
+                        acceptance_probability = 0
+                    else:
+                        acceptance_probability = 1
+                else:
+                    acceptance_probability = max(min(1, 1-smoothing_slope*(contrast_array[y][x]-(1-contrast_threshold))+0.5), 0)
+                if rd.random() < acceptance_probability:
+                    X[a] = x
+                    Y[a] = y
+                    a += 1
+        #returning appropriate array  
         return np.array([[X[i], Y[i]] for i in range(len(X))])
     
     #BRIGHTNESS METHOD 
+    #majority of pieces of code are identical to those in contrast method - refer to comments above
     if imagestyle == "brightness":
         M_gray = M.convert('L')
         M_pixels = np.array(list(M_gray.getdata())).reshape((M_gray.size[1], M_gray.size[0]))/255
