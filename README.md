@@ -56,12 +56,15 @@ When running the file you should see the code in action converting an image like
 ![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/recurrentTheme.jpg?raw=true)
 
 To points using halftoning:
+
 ![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/points.png?raw=true)
 
 Then to a line drawing by solving TSP:
+
 ![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/line.png?raw=true)
 
 Or a smoothened variant using the spline style:
+
 ![alt text](https://github.com/Lussebullen/LineArtTSP/blob/main/spline.png?raw=true)
 
 To use your own image, simply change the path variable as described in the notebook.
