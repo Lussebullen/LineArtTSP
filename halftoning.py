@@ -8,7 +8,7 @@ import math
 ########################################################################################################################
 # Used this source for Stippling: https://www.cs.ubc.ca/labs/imager/tr/2002/secord2002b/secord.2002b.pdf
 
-def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_pixel_distance = 5, contrast_threshold = 0.15, smoothing_constant = 0, invert = False):
+def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_pixel_distance = 5, contrast_threshold = 0.15, smoothing_constant = 0, invert = True):
     """
     :param n:   Desired amount of samples
     :param path:   path to image file for halftoning
@@ -77,12 +77,22 @@ def rejectionSampling(n, path, imagestyle="brightness", x_pixel_distance = 5, y_
         a = 0           # Accepted samples
         X = [0] * n
         Y = [0] * n
-        while a < n:
-            x = int(rd.uniform(0, c))
-            y = int(rd.uniform(0, r))
-            u = rd.uniform(0, 1)
-            if u > M_pixels[y][x]:
-                X[a] = x
-                Y[a] = y
-                a += 1
+        if invert == False:
+            while a < n:
+                x = int(rd.uniform(0, c))
+                y = int(rd.uniform(0, r))
+                u = rd.uniform(0, 1)
+                if u > M_pixels[y][x]:
+                    X[a] = x
+                    Y[a] = y
+                    a += 1
+        else:
+            while a < n:
+                x = int(rd.uniform(0, c))
+                y = int(rd.uniform(0, r))
+                u = rd.uniform(0, 1)
+                if u < M_pixels[y][x]:
+                    X[a] = x
+                    Y[a] = y
+                    a += 1
         return np.array([[X[i], Y[i]] for i in range(len(X))])
